@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour
     private Action<InputAction.CallbackContext> moveCallback;
     private Action<InputAction.CallbackContext> jumpCallback;
     private Action<InputAction.CallbackContext> flattenCallback;
-    private Action<InputAction.CallbackContext> unflattenCallback;
+    private q unflattenCallback;
 
 
     // Start is called before the first frame update
@@ -163,6 +163,7 @@ public class PlayerController : MonoBehaviour
     void OnDestroy()
     {
         // remove callbacks from InputSystem
+        playerInput.actions.FindAction("Move").started -= moveCallback;
         playerInput.actions.FindAction("Move").performed -= moveCallback;
         playerInput.actions.FindAction("Move").canceled -= moveCallback;
         playerInput.actions.FindAction("Jump").performed -= jumpCallback;
