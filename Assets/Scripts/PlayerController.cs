@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour
     private Action<InputAction.CallbackContext> moveCallback;
     private Action<InputAction.CallbackContext> jumpCallback;
     private Action<InputAction.CallbackContext> flattenCallback;
-    private q unflattenCallback;
+    private Action<InputAction.CallbackContext> unflattenCallback;
 
 
     // Start is called before the first frame update
