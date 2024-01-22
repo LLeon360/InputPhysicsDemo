@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028326, g: 0.22571333, b: 0.30692202, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571328, b: 0.3069217, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -302,7 +302,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1744208877}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 4.41, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -320,6 +320,14 @@ PrefabInstance:
     - target: {fileID: 91031803392183923, guid: 5837e939ef11c4bbd8a2b2905203224a, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 1460738440336381835, guid: 5837e939ef11c4bbd8a2b2905203224a, type: 3}
+      propertyPath: m_Actions
+      value: 
+      objectReference: {fileID: -944628639613478452, guid: 0912b68e6446d784fba801731c4bb8bc, type: 3}
+    - target: {fileID: 1460738440336381835, guid: 5837e939ef11c4bbd8a2b2905203224a, type: 3}
+      propertyPath: m_NotificationBehavior
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9204288512344511592, guid: 5837e939ef11c4bbd8a2b2905203224a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -378,6 +386,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Platform
       objectReference: {fileID: 0}
+    - target: {fileID: 1578283064027571904, guid: 095c982d28fcb44d79b47c7b3853503f, type: 3}
+      propertyPath: m_TagString
+      value: Ground
+      objectReference: {fileID: 0}
     - target: {fileID: 3601926913791555419, guid: 095c982d28fcb44d79b47c7b3853503f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.091548
@@ -427,7 +439,7 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1744208880}
   - {fileID: 1321991181}
+  - {fileID: 1744208880}
   - {fileID: 7047932293031638249}
   - {fileID: 1738652209841315762}
