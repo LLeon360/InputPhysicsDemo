@@ -97,7 +97,7 @@ public class PlayerController : MonoBehaviour
         if(transform.localScale.y == 0.5f)
             transform.position = new Vector3(transform.position.x, transform.position.y + 0.25f, transform.position.z);
         //rescale the player and collider
-        transform.localScale = new Vector3(1, 1, 1);)
+        transform.localScale = new Vector3(1, 1, 1);
         sc.radius = 0.5f;
     }
     
