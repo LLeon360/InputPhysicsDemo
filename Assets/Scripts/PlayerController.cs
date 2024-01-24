@@ -27,34 +27,14 @@ public class PlayerController : MonoBehaviour
 
     // add variable to check if we're on the ground
     private bool isGrounded;
+    [SerializeField]
     private bool hasDoubleJump;
-
-    // keep references to Actions, in order to remove them from the InputSystem when the PlayerController is destroyed
-    private Action<InputAction.CallbackContext> moveCallback;
-    private Action<InputAction.CallbackContext> jumpCallback;
-    private Action<InputAction.CallbackContext> flattenCallback;
-    private Action<InputAction.CallbackContext> unflattenCallback;
-
 
     // Start is called before the first frame update
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
         sc = gameObject.GetComponent<SphereCollider>();
-
-        moveCallback = ctx => OnMove(ctx.ReadValue<Vector2>());
-        playerInput.actions.FindAction("Move").started += moveCallback;
-        playerInput.actions.FindAction("Move").performed += moveCallback;
-        playerInput.actions.FindAction("Move").canceled += moveCallback;
-
-        jumpCallback = ctx => OnJump();
-        playerInput.actions.FindAction("Jump").performed += jumpCallback;
-
-        flattenCallback = ctx => OnFlatten();
-        playerInput.actions.FindAction("Flatten").performed += flattenCallback;
-
-        unflattenCallback = ctx => OnUnflatten();
-        playerInput.actions.FindAction("Flatten").canceled += unflattenCallback;
     }
 
     // Update is called once per frame
@@ -68,9 +48,12 @@ public class PlayerController : MonoBehaviour
         Move(moveValue.x, moveValue.y);
     }
 
-    public void OnFlatten() {
-        // flatten the player
-        Flatten();
+    public void OnFlatten(InputAction.CallbackContext ctx) {
+        if(ctx.phase == InputActionPhase.Started) {
+            Flatten();
+        } else if(ctx.phase == InputActionPhase.Canceled) {
+            Unflatten();
+        }
     }
 
     void Flatten() {
@@ -78,16 +61,12 @@ public class PlayerController : MonoBehaviour
 
         //adjust position to prevent the ball from suddenly floating
         if(transform.localScale.y == 1)
-            transform.position = new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z);
+            transform.position = new Vector3(transform.position.x, transform.position.y - 0.25f, transform.position.z);
         //scale the player and collider
-        transform.localScale = new Vector3(1, 0.5f, 1);
+        transform.localScale = new Vector3(2, 0.5f, 2);
         //(this does make the horizontal bounding box inaccurate since the collider is a sphere and not an ellipsoid)
-        sc.radius = 0.25f;
-    }
-
-    public void OnUnflatten() {
-        // unflatten the player
-        Unflatten();
+        //0.125 bc the x local scale rescales the radius as well, so this is actually 0.25f in terms of world space
+        sc.radius = 0.125f;
     }
 
     void Unflatten() {
@@ -101,13 +80,16 @@ public class PlayerController : MonoBehaviour
         sc.radius = 0.5f;
     }
     
-    public void OnJump()
+    public void OnJump(InputAction.CallbackContext ctx)
     {
-        // check if player is on the ground, and call Jump()
-        if(isGrounded || hasDoubleJump) {
-            hasDoubleJump = isGrounded;
-            Jump();
+        if(ctx.phase == InputActionPhase.Started) {
+            // check if player is on the ground, and call Jump()
+            if(isGrounded || hasDoubleJump) {
+                hasDoubleJump = isGrounded;
+                Jump();
+            }
         }
+        
     }
 
     private void Jump()
@@ -116,11 +98,11 @@ public class PlayerController : MonoBehaviour
         rb.velocity = new Vector3(rb.velocity.x, jumpHeight, rb.velocity.z);
     }
 
-    void OnMove(Vector2 moveVal)
+    public void OnMove(InputAction.CallbackContext ctx)
     {
         //store input as a 2D vector and call Move()
         // moveValue = moveVal.Get<Vector2>();
-        moveValue = moveVal;
+        moveValue = ctx.ReadValue<Vector2>();
     }
 
     private void Move(float x, float z)
@@ -162,12 +144,6 @@ public class PlayerController : MonoBehaviour
 
     void OnDestroy()
     {
-        // remove callbacks from InputSystem
-        playerInput.actions.FindAction("Move").started -= moveCallback;
-        playerInput.actions.FindAction("Move").performed -= moveCallback;
-        playerInput.actions.FindAction("Move").canceled -= moveCallback;
-        playerInput.actions.FindAction("Jump").performed -= jumpCallback;
-        playerInput.actions.FindAction("Flatten").performed -= flattenCallback;
-        playerInput.actions.FindAction("Flatten").canceled -= unflattenCallback;
+
     }
 }
