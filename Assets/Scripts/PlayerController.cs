@@ -27,7 +27,6 @@ public class PlayerController : MonoBehaviour
 
     // add variable to check if we're on the ground
     private bool isGrounded;
-    [SerializeField]
     private bool hasDoubleJump;
 
     // Start is called before the first frame update
