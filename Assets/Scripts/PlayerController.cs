@@ -140,9 +140,4 @@ public class PlayerController : MonoBehaviour
         // reload current scene
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-
-    void OnDestroy()
-    {
-
-    }
 }
