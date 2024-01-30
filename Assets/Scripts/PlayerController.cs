@@ -11,7 +11,6 @@ public class PlayerController : MonoBehaviour
 {
     // add component references
     private Rigidbody rb;
-    private SphereCollider sc;
     [SerializeField]
     private PlayerInput playerInput;
 
@@ -22,6 +21,8 @@ public class PlayerController : MonoBehaviour
     private float jumpHeight = 5f;
     [SerializeField]
     private float respawnHeight = -1;
+    [SerializeField]
+    private bool canDoubleJump = false;
 
     private Vector2 moveValue = Vector2.zero;
 
@@ -33,7 +34,6 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
-        sc = gameObject.GetComponent<SphereCollider>();
     }
 
     // Update is called once per frame
@@ -63,9 +63,6 @@ public class PlayerController : MonoBehaviour
             transform.position = new Vector3(transform.position.x, transform.position.y - 0.25f, transform.position.z);
         //scale the player and collider
         transform.localScale = new Vector3(2, 0.5f, 2);
-        //(this does make the horizontal bounding box inaccurate since the collider is a sphere and not an ellipsoid)
-        //0.125 bc the x local scale rescales the radius as well, so this is actually 0.25f in terms of world space
-        sc.radius = 0.125f;
     }
 
     void Unflatten() {
@@ -76,7 +73,6 @@ public class PlayerController : MonoBehaviour
             transform.position = new Vector3(transform.position.x, transform.position.y + 0.25f, transform.position.z);
         //rescale the player and collider
         transform.localScale = new Vector3(1, 1, 1);
-        sc.radius = 0.5f;
     }
     
     public void OnJump(InputAction.CallbackContext ctx)
@@ -84,7 +80,7 @@ public class PlayerController : MonoBehaviour
         if(ctx.phase == InputActionPhase.Started) {
             // check if player is on the ground, and call Jump()
             if(isGrounded || hasDoubleJump) {
-                hasDoubleJump = isGrounded;
+                hasDoubleJump = isGrounded && canDoubleJump;
                 Jump();
             }
         }
@@ -118,21 +114,31 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionStay(Collision collision)
     {
-        // Check if we are in contact with the ground. If we are, note that we are grounded
-        if(collision.gameObject.tag == "Ground")        
-        {
+        Vector3 norm = collision.GetContact(0).normal;
+        
+        if(Vector3.Angle(norm, Vector3.up) < 45) {
             isGrounded = true;
-            hasDoubleJump = true;
+            hasDoubleJump = canDoubleJump;
         }
+
+        
+        // Check if we are in contact with the ground. If we are, note that we are grounded
+        // if(collision.gameObject.CompareTag("Ground"))
+        // {
+        //     isGrounded = true;
+        //     hasDoubleJump = canDoubleJump;
+        // }
     }
 
     void OnCollisionExit(Collision collision)
     {
         // When we leave the ground, we are no longer grounded
-        if(collision.gameObject.tag == "Ground")
-        {
-            isGrounded = false;
-        }
+        // if(collision.gameObject.CompareTag("Ground"))
+        // {
+        //     isGrounded = false;
+        // }
+
+        isGrounded = false;
     }
 
     private void Respawn()
